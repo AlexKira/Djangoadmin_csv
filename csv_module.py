@@ -1,50 +1,41 @@
-from django.contrib import admin
-from users.models import CustomUser
-from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 import csv
 import pandas
-import datetime as d
 import django
+import datetime as d
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseForbidden
+from django.contrib import admin
+from 'my_project'.models import 'my_model'
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from django.http import HttpResponse, HttpResponseForbidden
+
+# install pip install django-admin-rangefilter
+from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+
 # Register your models here.
 
-CustomUser = get_user_model()
+'my_model' = get_user_model()
 
-class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    list_display = ['first_name', 'last_name', 'date_joined', 'email', 'is_active', 'email_confirm']
-    list_editable = ['email_confirm']
-    list_display_links = ('first_name', 'last_name', 'date_joined', 'email',)
-    fieldsets = (
-        (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active', 'date_joined')}
-        ),
-    )
-
-    search_fields = ('email',)
-    ordering = ('-date_joined',)
-
-    csv_fields = ['first_name', 'last_name', 'email', ]
-    list_filter = ('email_confirm', ('date_joined', DateRangeFilter),)
+class 'my_model'Admin(UserAdmin):
+    model = 'my_model'
+    list_display = ['my_filds_model']
+    list_editable = ['my_filds_model']
+    list_display_links = ('my_filds_model')
+    search_fields = ('my_filds_model',)
+    ordering = ('-my_filds_date_model',)
+    csv_fields = ['my_filds_model']
+    list_filter = ('my_filds_model', ('my_filds_date_model', DateRangeFilter),)
 
 # CSV module
 
-    def export_as_csv(admin_model, request, queryset):
+    def export_as_csv(self, request, queryset):
         # everyone has perms to export as csv unless explicitly defined
         if getattr(settings, 'DJANGO_EXPORTS_REQUIRE_PERM', None):
-            admin_opts = admin_model.opts
+            admin_opts = self
             has_csv_permission = request.user.objects_name.all("%s" % (admin_opts))
         else:
-            has_csv_permission = admin_model.has_csv_permission(request) \
-                if (hasattr(admin_model, 'has_csv_permission') and callable(getattr(admin_model, 'has_csv_permission'))) \
+            has_csv_permission = self.has_csv_permission(request) \
+                if (hasattr(self, 'has_csv_permission') and callable(getattr(self, 'has_csv_permission'))) \
                 else True
         if has_csv_permission:
             start_date = request.GET.get("date_joined__range__gte", None)
@@ -54,8 +45,8 @@ class CustomUserAdmin(UserAdmin):
                 list_editable = "yes"
             if request.GET.get('email_confirm__exact' ) == '0':
                 list_editable = "not"
-            if getattr(admin_model, 'csv_fields', None):
-                field_names = admin_model.csv_fields
+            if getattr(self, 'csv_fields', None):
+                field_names = self.csv_fields
             if django.VERSION[0] == 1 and django.VERSION[1] <= 5:
                 response = HttpResponse(mimetype='text/csv')
             else:
@@ -68,4 +59,4 @@ class CustomUserAdmin(UserAdmin):
     export_as_csv.short_description = "Сохранить в .csv"
     actions = [export_as_csv]
 
-admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register('my_model', 'my_model'Admin)
