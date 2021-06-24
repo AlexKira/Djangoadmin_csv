@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.http import HttpResponse, HttpResponseForbidden
 
-# install pip install django-admin-rangefilter
+# pip install django-admin-rangefilter
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
 # Register your models here.
